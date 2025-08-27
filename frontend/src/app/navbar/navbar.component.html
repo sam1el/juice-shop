@@ -19,8 +19,13 @@
 
     <span class="fill-remaining-space"></span>
 
-    <mat-search-bar #searchControl id="searchQuery" (onEnter)="search(searchControl.value)"
-                    aria-label="Click to search"></mat-search-bar>
+      <mat-form-field appearance="outline" class="navbar-search">
+        <mat-label>Search</mat-label>
+        <input matInput #searchControl id="searchQuery" (keyup.enter)="search(searchControl.value)" aria-label="Click to search">
+        <button mat-icon-button matSuffix (click)="search(searchControl.value)" aria-label="Search">
+          <mat-icon>search</mat-icon>
+        </button>
+      </mat-form-field>
 
     <button [matMenuTriggerFor]="userMenu" mat-button style="vertical-align: middle; height:48px;" class="buttons"
             fxHide.lt-md fxShow aria-label="Show/hide account menu" id="navbarAccount">

@@ -5,9 +5,14 @@
 
 const fs = require('fs')
 const locales = require('../data/static/locales')
+const rateLimit = require('express-rate-limit')
 
-module.exports = function getLanguageList () { // TODO Refactor and extend to also load backend translations from /i18n/*json and calculate joint percentage/gauge
-  return (req, res, next) => {
+module.exports = function getLanguageList () {
+  const limiter = rateLimit({
+    windowMs: 60 * 1000, // 1 minute
+    max: 10 // limit each IP to 10 requests per minute
+  })
+  return [limiter, (req, res, next) => {
     const languages = []
     let count = 0
     let enContent
@@ -15,6 +20,7 @@ module.exports = function getLanguageList () { // TODO Refactor and extend to al
     fs.readFile('frontend/dist/frontend/assets/i18n/en.json', 'utf-8', (err, content) => {
       if (err) {
         next(new Error(`Unable to retrieve en.json language file: ${err.message}`))
+        return
       }
       enContent = JSON.parse(content)
       fs.readdir('frontend/dist/frontend/assets/i18n/', (err, languageFiles) => {
@@ -69,5 +75,5 @@ module.exports = function getLanguageList () { // TODO Refactor and extend to al
         }
       })
     }
-  }
+  }]
 }

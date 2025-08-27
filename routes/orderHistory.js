@@ -31,7 +31,13 @@ module.exports.toggleDeliveryStatus = function toggleDeliveryStatus () {
   return async (req, res, next) => {
     const deliveryStatus = !req.body.deliveryStatus
     const eta = deliveryStatus ? '0' : '1'
-    await db.orders.update({ _id: req.params.id }, { $set: { delivered: deliveryStatus, eta: eta } })
+    const { ObjectId } = require('mongodb')
+    const sanitizedId = typeof req.params.id === 'string' && /^[a-fA-F0-9]{24}$/.test(req.params.id) ? req.params.id : null
+    if (!sanitizedId) {
+      return res.status(400).json({ status: 'error', message: 'Invalid order ID format.' })
+    }
+    const objectId = new ObjectId(sanitizedId)
+    await db.orders.update({ _id: objectId }, { $set: { delivered: deliveryStatus, eta: eta } })
     res.status(200).json({ status: 'success' })
   }
 }

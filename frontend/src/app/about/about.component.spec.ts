@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
-import { SlideshowModule } from 'ng-simple-slideshow'
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing'
 import { HttpClientTestingModule } from '@angular/common/http/testing'
 
 import { AboutComponent } from './about.component'
@@ -14,12 +13,11 @@ xdescribe('AboutComponent', () => { // FIXME https://github.com/dockleryxk/ng-si
   let component: AboutComponent
   let fixture: ComponentFixture<AboutComponent>
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
 
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
-        SlideshowModule,
         MatCardModule
       ],
       declarations: [ AboutComponent ]

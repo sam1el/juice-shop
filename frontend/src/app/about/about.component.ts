@@ -7,7 +7,6 @@ import { Component, OnInit } from '@angular/core'
 import { DomSanitizer } from '@angular/platform-browser'
 import { ConfigurationService } from '../Services/configuration.service'
 import { FeedbackService } from '../Services/feedback.service'
-import { IImage } from 'ng-simple-slideshow'
 import { dom, library } from '@fortawesome/fontawesome-svg-core'
 import { faFacebook, faReddit, faSlack, faTwitter } from '@fortawesome/free-brands-svg-icons'
 import { faNewspaper, faStar } from '@fortawesome/free-regular-svg-icons'
@@ -28,7 +27,7 @@ export class AboutComponent implements OnInit {
   public slackUrl?: string
   public redditUrl?: string
   public pressKitUrl?: string
-  public slideshowDataSource: IImage[] = []
+  public slideshowDataSource: any[] = [] // TODO: Refactor slideshow to Angular Material Carousel or remove
 
   private images = [
     'assets/public/images/carousel/1.jpg',
@@ -77,8 +76,9 @@ export class AboutComponent implements OnInit {
   populateSlideshowFromFeedbacks () {
     this.feedbackService.find().subscribe((feedbacks) => {
       for (let i = 0; i < feedbacks.length; i++) {
-        feedbacks[i].comment = '<span style="width: 90%; display:block;">' + feedbacks[i].comment + '<br/>' + ' (' + this.stars[feedbacks[i].rating] + ')' + '</span>'
-        feedbacks[i].comment = this.sanitizer.bypassSecurityTrustHtml(feedbacks[i].comment)
+  feedbacks[i].comment = '<span style="width: 90%; display:block;">' + feedbacks[i].comment + '<br/>' + ' (' + this.stars[feedbacks[i].rating] + ')' + '</span>'
+  const sanitizedComment = this.sanitizer.sanitize(1, feedbacks[i].comment) || ''
+  feedbacks[i].comment = this.sanitizer.bypassSecurityTrustHtml(sanitizedComment)
         this.slideshowDataSource.push({ url: this.images[i % this.images.length], caption: feedbacks[i].comment })
       }
     },(err) => {

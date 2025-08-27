@@ -7,7 +7,6 @@ import { Component, OnInit } from '@angular/core'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { mimeType } from './mime-type.validator'
 import { PhotoWallService } from '../Services/photo-wall.service'
-import { IImage } from 'ng-simple-slideshow'
 import { ConfigurationService } from '../Services/configuration.service'
 import { dom, library } from '@fortawesome/fontawesome-svg-core'
 import { faTwitter } from '@fortawesome/free-brands-svg-icons'
@@ -29,7 +28,7 @@ export class PhotoWallComponent implements OnInit {
     image: new FormControl('', { validators: [Validators.required], asyncValidators: [mimeType] }),
     caption: new FormControl('', [Validators.required])
   })
-  public slideshowDataSource: IImage[] = []
+  public slideshowDataSource: any[] = [] // TODO: Refactor slideshow to Angular Material Carousel or remove
   public twitterHandle = null
 
   constructor (private photoWallService: PhotoWallService, private configurationService: ConfigurationService,

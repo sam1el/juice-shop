@@ -8,7 +8,7 @@ import { ServerStartedNotificationComponent } from './server-started-notificatio
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { RouterTestingModule } from '@angular/router/testing'
-import { async, TestBed } from '@angular/core/testing'
+import { waitForAsync, TestBed } from '@angular/core/testing'
 import { AppComponent } from './app.component'
 import { NavbarComponent } from './navbar/navbar.component'
 import { SidenavComponent } from './sidenav/sidenav.component'
@@ -26,7 +26,6 @@ import { MatTooltipModule } from '@angular/material/tooltip'
 import { MatListModule } from '@angular/material/list'
 import { MatCardModule } from '@angular/material/card'
 import { NoopAnimationsModule } from '@angular/platform-browser/animations'
-import { NgMatSearchBarModule } from 'ng-mat-search-bar'
 import { MatRadioModule } from '@angular/material/radio'
 import { MatDividerModule } from '@angular/material/divider'
 import { MatDialogModule } from '@angular/material/dialog'
@@ -37,7 +36,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar'
 describe('AppComponent', () => {
   let app: AppComponent
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
 
     TestBed.configureTestingModule({
       declarations: [
@@ -65,7 +64,6 @@ describe('AppComponent', () => {
         MatTooltipModule,
         NoopAnimationsModule,
         MatSnackBarModule,
-        NgMatSearchBarModule,
         MatRadioModule,
         MatDividerModule,
         MatListModule,
@@ -81,7 +79,7 @@ describe('AppComponent', () => {
     fixture.detectChanges()
   })
 
-  it('should create the app', async(() => {
+  it('should create the app', waitForAsync(() => {
     expect(app).toBeTruthy()
   }))
 })

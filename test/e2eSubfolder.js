@@ -5,7 +5,7 @@
 
 const app = require('express')()
 const server = require('http').Server(app)
-const request = require('request')
+const fetch = require('node-fetch')
 const colors = require('colors/safe')
 const logger = require('./../lib/logger')
 const serverApp = require('./../server.js')
@@ -17,9 +17,14 @@ const basePath = baseUrl.pathname
 const proxyPort = baseUrl.port
 process.env.BASE_PATH = basePath
 
-app.use('/subfolder', (req, res) => {
+app.use('/subfolder', async (req, res) => {
   const proxyUrl = originalBase + req.url
-  req.pipe(request({ qs: req.query, uri: proxyUrl })).pipe(res)
+  try {
+    const response = await fetch(proxyUrl)
+    response.body.pipe(res)
+  } catch (err) {
+    res.status(500).send('Proxy error')
+  }
 })
 
 exports.start = async function (readyCallback) {
