@@ -11,7 +11,12 @@ const utils = require('../lib/utils')
 const themes = require('../views/themes/themes').themes
 
 exports.getVideo = () => {
-  return (req, res) => {
+  const rateLimit = require('express-rate-limit')
+  const limiter = rateLimit({
+    windowMs: 60 * 1000, // 1 minute
+    max: 10 // limit each IP to 10 video requests per minute
+  })
+  return [limiter, (req, res) => {
     const path = videoPath()
     const stat = fs.statSync(path)
     const fileSize = stat.size
@@ -39,7 +44,7 @@ exports.getVideo = () => {
       res.writeHead(200, head)
       fs.createReadStream(path).pipe(res)
     }
-  }
+  }]
 }
 
 exports.promotionVideo = () => {

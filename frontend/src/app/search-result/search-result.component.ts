@@ -141,7 +141,8 @@ export class SearchResultComponent implements OnDestroy, AfterViewInit {
         this.io.socket().emit('verifyLocalXssChallenge', queryParam)
       })
       this.dataSource.filter = queryParam.toLowerCase()
-      this.searchValue = this.sanitizer.bypassSecurityTrustHtml(queryParam)
+  const sanitizedQueryParam = this.sanitizer.sanitize(1, queryParam) || ''
+  this.searchValue = this.sanitizer.bypassSecurityTrustHtml(sanitizedQueryParam)
       this.gridDataSource.subscribe((result: any) => {
         if (result.length === 0) {
           this.emptyState = true

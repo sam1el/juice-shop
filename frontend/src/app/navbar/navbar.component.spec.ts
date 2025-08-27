@@ -8,7 +8,7 @@ import { SearchResultComponent } from '../search-result/search-result.component'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { UserService } from '../Services/user.service'
 import { ConfigurationService } from '../Services/configuration.service'
-import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing'
+import { waitForAsync, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing'
 import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { NavbarComponent } from './navbar.component'
 import { Location } from '@angular/common'
@@ -23,7 +23,6 @@ import { AdministrationService } from '../Services/administration.service'
 import { RouterTestingModule } from '@angular/router/testing'
 import { MatMenuModule } from '@angular/material/menu'
 import { MatTooltipModule } from '@angular/material/tooltip'
-import { CookieService } from 'ngx-cookie-service'
 import { SocketIoService } from '../Services/socket-io.service'
 import { of, throwError } from 'rxjs'
 import { MatCardModule } from '@angular/material/card'
@@ -33,7 +32,6 @@ import { MatPaginatorModule } from '@angular/material/paginator'
 import { MatDialogModule } from '@angular/material/dialog'
 import { MatDividerModule } from '@angular/material/divider'
 import { MatGridListModule } from '@angular/material/grid-list'
-import { NgMatSearchBarModule } from 'ng-mat-search-bar'
 import { LoginGuard } from '../app.guard'
 import { MatRadioModule } from '@angular/material/radio'
 import { MatSnackBarModule } from '@angular/material/snack-bar'
@@ -58,7 +56,7 @@ describe('NavbarComponent', () => {
   let location: Location
   let loginGuard
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
 
     administrationService = jasmine.createSpyObj('AdministrationService',['getApplicationVersion'])
     administrationService.getApplicationVersion.and.returnValue(of(undefined))
@@ -102,7 +100,6 @@ describe('NavbarComponent', () => {
         MatDialogModule,
         MatDividerModule,
         MatGridListModule,
-        NgMatSearchBarModule,
         MatRadioModule,
         MatSnackBarModule
       ],
@@ -111,7 +108,6 @@ describe('NavbarComponent', () => {
         { provide: ConfigurationService, useValue: configurationService },
         { provide: UserService, useValue: userService },
         { provide: ChallengeService, useValue: challengeService },
-        { provide: CookieService, useValue: cookieService },
         { provide: SocketIoService, useValue: socketIoService },
         { provide: LoginGuard, useValue: loginGuard },
         TranslateService

@@ -4,7 +4,7 @@
  */
 
 const config = require('config')
-const request = require('request')
+const fetch = require('node-fetch')
 
 describe('/#/deluxe-membership', () => {
   describe('challenge "svgInjection"', () => {
@@ -23,14 +23,18 @@ describe('/#/deluxe-membership', () => {
     it('should upgrade to deluxe for free by making a post request to /rest/deluxe-membership by setting the paymentMode parameter to null', () => {
       browser.get(protractor.basePath + '/#/')
       browser.manage().getCookie('token').then((token) => {
-        request.post(browser.baseUrl + '/rest/deluxe-membership', {
+        fetch(browser.baseUrl + '/rest/deluxe-membership', {
+          method: 'POST',
           headers: { Authorization: 'Bearer ' + token.value }
-        }, (err, response, body) => {
-          expect(err).not.toBeTruthy()
-          expect(JSON.parse(body).status).toEqual('success')
-
-          protractor.expect.challengeSolved({ challenge: 'Deluxe Fraud' })
         })
+          .then(response => response.json())
+          .then(body => {
+            expect(body.status).toEqual('success')
+            protractor.expect.challengeSolved({ challenge: 'Deluxe Fraud' })
+          })
+          .catch(err => {
+            expect(err).not.toBeTruthy()
+          })
       })
     })
   })

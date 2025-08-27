@@ -6,28 +6,41 @@
 const fs = require('fs')
 const models = require('../models/index')
 const insecurity = require('../lib/insecurity')
-const request = require('request')
+const fetch = require('node-fetch')
 const logger = require('../lib/logger')
 
 module.exports = function profileImageUrlUpload () {
   return (req, res, next) => {
     if (req.body.imageUrl !== undefined) {
-      const url = req.body.imageUrl
+      let url = req.body.imageUrl
+      // Basic SSRF protection: only allow http/https URLs
+      if (!/^https?:\/\//i.test(url)) {
+        return res.status(400).send('Invalid image URL')
+      }
+      // Prevent path traversal in file extension
+      url = url.split('?')[0]
+      const extMatch = url.match(/\.([a-zA-Z0-9]+)$/)
+      const ext = extMatch && ['jpg', 'jpeg', 'png', 'svg', 'gif'].includes(extMatch[1].toLowerCase()) ? extMatch[1].toLowerCase() : 'jpg'
       if (url.match(/(.)*solve\/challenges\/server-side(.)*/) !== null) req.app.locals.abused_ssrf_bug = true
       const loggedInUser = insecurity.authenticatedUsers.get(req.cookies.token)
       if (loggedInUser) {
-        const imageRequest = request
-          .get(url)
-          .on('error', function (err) {
+        fetch(url, { method: 'GET', timeout: 5000 })
+          .then(response => {
+            if (response.ok) {
+              const destPath = `frontend/dist/frontend/assets/public/images/uploads/${loggedInUser.data.id}.${ext}`
+              if (destPath.includes('..')) {
+                return res.status(400).send('Invalid file path')
+              }
+              const dest = fs.createWriteStream(destPath)
+              response.body.pipe(dest)
+              models.User.findByPk(loggedInUser.data.id).then(user => { return user.update({ profileImage: `/assets/public/images/uploads/${loggedInUser.data.id}.${ext}` }) }).catch(error => { next(error) })
+            } else {
+              models.User.findByPk(loggedInUser.data.id).then(user => { return user.update({ profileImage: url }) }).catch(error => { next(error) })
+            }
+          })
+          .catch(err => {
             models.User.findByPk(loggedInUser.data.id).then(user => { return user.update({ profileImage: url }) }).catch(error => { next(error) })
             logger.warn('Error retrieving user profile image: ' + err.message + '; using image link directly')
-          })
-          .on('response', function (res) {
-            if (res.statusCode === 200) {
-              const ext = ['jpg', 'jpeg', 'png', 'svg', 'gif'].includes(url.split('.').slice(-1)[0].toLowerCase()) ? url.split('.').slice(-1)[0].toLowerCase() : 'jpg'
-              imageRequest.pipe(fs.createWriteStream(`frontend/dist/frontend/assets/public/images/uploads/${loggedInUser.data.id}.${ext}`))
-              models.User.findByPk(loggedInUser.data.id).then(user => { return user.update({ profileImage: `/assets/public/images/uploads/${loggedInUser.data.id}.${ext}` }) }).catch(error => { next(error) })
-            } else models.User.findByPk(loggedInUser.data.id).then(user => { return user.update({ profileImage: url }) }).catch(error => { next(error) })
           })
       } else {
         next(new Error('Blocked illegal activity by ' + req.connection.remoteAddress))

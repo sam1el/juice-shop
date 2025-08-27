@@ -49,7 +49,9 @@ export class AdministrationComponent implements OnInit {
       this.userDataSource = users
       this.userDataSourceHidden = users
       for (let user of this.userDataSource) {
-        user.email = this.sanitizer.bypassSecurityTrustHtml(`<span class="${user.token ? 'confirmation' : 'error'}">${user.email}</span>`)
+  const emailHtml = `<span class="${user.token ? 'confirmation' : 'error'}">${user.email}</span>`
+  const sanitizedEmail = this.sanitizer.sanitize(1, emailHtml) || ''
+  user.email = this.sanitizer.bypassSecurityTrustHtml(sanitizedEmail)
       }
       this.userDataSource = new MatTableDataSource(this.userDataSource)
       this.userDataSource.paginator = this.paginatorUsers
@@ -65,7 +67,8 @@ export class AdministrationComponent implements OnInit {
     this.feedbackService.find().subscribe((feedbacks) => {
       this.feedbackDataSource = feedbacks
       for (let feedback of this.feedbackDataSource) {
-        feedback.comment = this.sanitizer.bypassSecurityTrustHtml(feedback.comment)
+  const sanitizedComment = this.sanitizer.sanitize(1, feedback.comment) || ''
+  feedback.comment = this.sanitizer.bypassSecurityTrustHtml(sanitizedComment)
       }
       this.feedbackDataSource = new MatTableDataSource(this.feedbackDataSource)
       this.feedbackDataSource.paginator = this.paginatorFeedb

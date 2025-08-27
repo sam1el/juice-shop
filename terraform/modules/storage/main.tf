@@ -18,13 +18,12 @@ resource "aws_kms_key" "snyk_db_kms_key" {
 }
 
 resource "aws_db_instance" "snyk_db" {
-  name                      = replace(var.cluster_name,"-","")
   allocated_storage         = 20
   engine                    = "postgres"
-  engine_version            = "10.20"
+  engine_version            = "15.5"
   instance_class            = "db.t3.micro"
   storage_type              = "gp2"
-  password                  = "supersecret"
+  password                  = var.db_password
   username                  = "snyk"
   vpc_security_group_ids    = [var.rds_sg_id]
   db_subnet_group_name      = aws_db_subnet_group.snyk_rds_subnet_grp.id
@@ -82,22 +81,44 @@ resource "aws_s3_bucket" "snyk_storage" {
   }
 }
 
+resource "aws_s3_bucket_server_side_encryption_configuration" "snyk_storage_encryption" {
+  bucket = aws_s3_bucket.snyk_storage.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
 resource "aws_s3_bucket" "my-new-undeployed-bucket" {
   bucket = "${var.cluster_name}"
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "my_new_undeployed_bucket_encryption" {
+  bucket = aws_s3_bucket.my-new-undeployed-bucket.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
 }
 
 resource "aws_s3_bucket_public_access_block" "snyk_public" {
   bucket = aws_s3_bucket.my-new-undeployed-bucket.id
 
-  block_public_acls   = false
-  ignore_public_acls = false
-  block_public_policy = false
+  block_public_acls      = true
+  ignore_public_acls     = true
+  block_public_policy    = true
+  restrict_public_buckets = true
 }
 
 resource "aws_s3_bucket_public_access_block" "snyk_private" {
   bucket = aws_s3_bucket.snyk_storage.id
 
-  ignore_public_acls  = true
-  block_public_acls   = true
-  block_public_policy = true
+  ignore_public_acls      = true
+  block_public_acls       = true
+  block_public_policy     = true
+  restrict_public_buckets = true
 }

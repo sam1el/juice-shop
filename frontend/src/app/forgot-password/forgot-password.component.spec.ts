@@ -6,7 +6,7 @@
 import { TranslateModule } from '@ngx-translate/core'
 import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { ReactiveFormsModule } from '@angular/forms'
-import { async, ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing'
+import { waitForAsync, ComponentFixture, fakeAsync, flush, TestBed, tick } from '@angular/core/testing'
 import { ForgotPasswordComponent } from './forgot-password.component'
 import { SecurityQuestionService } from '../Services/security-question.service'
 
@@ -19,7 +19,6 @@ import { UserService } from 'src/app/Services/user.service'
 import { of, throwError } from 'rxjs'
 import { MatTooltipModule } from '@angular/material/tooltip'
 import { MatIconModule } from '@angular/material/icon'
-import { MatPasswordStrengthModule } from '@angular-material-extensions/password-strength'
 import { MatSlideToggleModule } from '@angular/material/slide-toggle'
 
 describe('ForgotPasswordComponent', () => {
@@ -28,7 +27,7 @@ describe('ForgotPasswordComponent', () => {
   let securityQuestionService: any
   let userService: any
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
 
     securityQuestionService = jasmine.createSpyObj('SecurityQuestionService', ['findBy'])
     securityQuestionService.findBy.and.returnValue(of({}))
@@ -39,7 +38,6 @@ describe('ForgotPasswordComponent', () => {
       declarations: [ ForgotPasswordComponent ],
       imports: [
         TranslateModule.forRoot(),
-        MatPasswordStrengthModule.forRoot(),
         HttpClientTestingModule,
         ReactiveFormsModule,
         BrowserAnimationsModule,

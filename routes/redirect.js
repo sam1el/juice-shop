@@ -9,7 +9,11 @@ const challenges = require('../data/datacache').challenges
 
 module.exports = function performRedirect () {
   return ({ query }, res, next) => {
-    const toUrl = query.to
+    let toUrl = query.to
+    // Only allow redirects to whitelisted URLs
+    if (typeof toUrl !== 'string' || !/^https?:\/\//i.test(toUrl)) {
+      return res.status(400).send('Invalid redirect URL')
+    }
     if (insecurity.isRedirectAllowed(toUrl)) {
       utils.solveIf(challenges.redirectCryptoCurrencyChallenge, () => { return toUrl === 'https://explorer.dash.org/address/Xr556RzuwX6hg5EGpkybbv5RanJoZN17kW' || toUrl === 'https://blockchain.info/address/1AbKfgvw9psQ41NbLi8kufDQTezwG8DRZm' || toUrl === 'https://etherscan.io/address/0x0f933ab9fcaaa782d0279c300d73750e1311eae6' })
       utils.solveIf(challenges.redirectChallenge, () => { return isUnintendedRedirect(toUrl) })

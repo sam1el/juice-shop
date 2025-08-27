@@ -33,7 +33,9 @@ export class LastLoginIpComponent {
     if (token) {
       payload = jwtDecode(token)
       if (payload.data.lastLoginIp) {
-        this.lastLoginIp = this.sanitizer.bypassSecurityTrustHtml(`<small>${payload.data.lastLoginIp}</small>`)
+  const ipHtml = `<small>${payload.data.lastLoginIp}</small>`
+  const sanitizedIpHtml = this.sanitizer.sanitize(1, ipHtml) || ''
+  this.lastLoginIp = this.sanitizer.bypassSecurityTrustHtml(sanitizedIpHtml)
       }
     }
   }

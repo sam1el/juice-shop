@@ -30,12 +30,8 @@ terraform {
 }
 
 provider "aws" {
-  region                      = var.region
-  skip_credentials_validation = true
-  skip_requesting_account_id  = true
-  skip_metadata_api_check     = true
-  access_key                  = var.access_key
-  secret_key                  = var.secret_key
+  region = var.region
+  # Credentials should be set via environment variables or shared credentials file
 }
 
 provider "kubernetes" {
@@ -66,9 +62,14 @@ module "subnets" {
 module "storage" {
   source = "./terraform/modules/storage"
 
-  cluster_name = module.includes.cluster_name
-  rds_sg_id = module.sg.rds_sg_id
+  cluster_name   = module.includes.cluster_name
+  rds_sg_id      = module.sg.rds_sg_id
   private_subnet = [module.subnets.subnet_id_main, module.subnets.subnet_id_secondary]
+  db_password    = var.db_password
 }
 
-
+variable "db_password" {
+  description = "The password for the database"
+  type        = string
+  sensitive   = true
+}

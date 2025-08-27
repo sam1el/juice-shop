@@ -10,11 +10,12 @@ const insecurity = require('../lib/insecurity')
 
 module.exports = function productReviews () {
   return (req, res, next) => {
-    const id = req.body.id
-    const user = insecurity.authenticatedUsers.from(req)
-    db.reviews.findOne({ _id: id }).then(review => {
+  const id = typeof req.body.id === 'string' ? req.body.id.replace(/[^a-zA-Z0-9_-]/g, '') : ''
+  const user = insecurity.authenticatedUsers.from(req)
+  const userEmail = typeof user.data.email === 'string' ? user.data.email.replace(/[^a-zA-Z0-9@._-]/g, '') : ''
+  db.reviews.findOne({ _id: id }).then(review => {
       var likedBy = review.likedBy
-      if (!likedBy.includes(user.data.email)) {
+  if (!likedBy.includes(userEmail)) {
         db.reviews.update(
           { _id: id },
           { $inc: { likesCount: 1 } }
@@ -24,10 +25,10 @@ module.exports = function productReviews () {
             setTimeout(function () {
               db.reviews.findOne({ _id: id }).then(review => {
                 var likedBy = review.likedBy
-                likedBy.push(user.data.email)
+                likedBy.push(userEmail)
                 var count = 0
                 for (var i = 0; i < likedBy.length; i++) {
-                  if (likedBy[i] === user.data.email) {
+                  if (likedBy[i] === userEmail) {
                     count++
                   }
                 }

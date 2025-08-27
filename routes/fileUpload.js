@@ -5,12 +5,12 @@
 
 const utils = require('../lib/utils')
 const challenges = require('../data/datacache').challenges
-const libxml = require('libxmljs2')
 const os = require('os')
 const vm = require('vm')
 const fs = require('fs')
 const unzipper = require('unzipper')
 const path = require('path')
+const xml2js = require('xml2js')
 
 function matchesSystemIniFile (text) {
   const match = text.match(/(; for 16-bit app support|drivers|mci|driver32|386enh|keyboard|boot|display)/gi)
@@ -42,13 +42,13 @@ function handleZipFileUpload ({ file }, res, next) {
             fs.createReadStream(tempFile)
               .pipe(unzipper.Parse())
               .on('entry', function (entry) {
-                const fileName = entry.path
-                const absolutePath = path.resolve('uploads/complaints/' + fileName)
-                utils.solveIf(challenges.fileWriteChallenge, () => { return absolutePath === path.resolve('ftp/legal.md') })
-                if (absolutePath.includes(path.resolve('.'))) {
-                  entry.pipe(fs.createWriteStream('uploads/complaints/' + fileName).on('error', function (err) { next(err) }))
-                } else {
+                const fileName = path.basename(entry.path)
+                const absolutePath = path.resolve('uploads/complaints', fileName)
+                if (!absolutePath.startsWith(path.resolve('uploads/complaints'))) {
                   entry.autodrain()
+                } else {
+                  utils.solveIf(challenges.fileWriteChallenge, () => { return absolutePath === path.resolve('ftp/legal.md') })
+                  entry.pipe(fs.createWriteStream(absolutePath).on('error', function (err) { next(err) }))
                 }
               }).on('error', function (err) { next(err) })
           })
@@ -77,28 +77,19 @@ function checkFileType ({ file }, res, next) {
 function handleXmlUpload ({ file }, res, next) {
   if (utils.endsWith(file.originalname.toLowerCase(), '.xml')) {
     utils.solveIf(challenges.deprecatedInterfaceChallenge, () => { return true })
-    if (file.buffer && !utils.disableOnContainerEnv()) { // XXE attacks in Docker/Heroku containers regularly cause "segfault" crashes
+    if (file.buffer && !utils.disableOnContainerEnv()) {
       const data = file.buffer.toString()
-      try {
-        const sandbox = { libxml, data }
-        vm.createContext(sandbox)
-        const xmlDoc = vm.runInContext('libxml.parseXml(data, { noblanks: true, noent: true, nocdata: true })', sandbox, { timeout: 2000 })
-        const xmlString = xmlDoc.toString(false)
-        utils.solveIf(challenges.xxeFileDisclosureChallenge, () => { return (matchesSystemIniFile(xmlString) || matchesEtcPasswdFile(xmlString)) })
-        res.status(410)
-        next(new Error('B2B customer complaints via file upload have been deprecated for security reasons: ' + utils.trunc(xmlString, 400) + ' (' + file.originalname + ')'))
-      } catch (err) {
-        if (utils.contains(err.message, 'Script execution timed out')) {
-          if (utils.notSolved(challenges.xxeDosChallenge)) {
-            utils.solve(challenges.xxeDosChallenge)
-          }
-          res.status(503)
-          next(new Error('Sorry, we are temporarily not available! Please try again later.'))
-        } else {
+      xml2js.parseString(data, { explicitCharkey: true, explicitRoot: false }, (err, result) => {
+        if (err) {
           res.status(410)
           next(new Error('B2B customer complaints via file upload have been deprecated for security reasons: ' + err.message + ' (' + file.originalname + ')'))
+        } else {
+          const xmlString = JSON.stringify(result)
+          utils.solveIf(challenges.xxeFileDisclosureChallenge, () => { return (matchesSystemIniFile(xmlString) || matchesEtcPasswdFile(xmlString)) })
+          res.status(410)
+          next(new Error('B2B customer complaints via file upload have been deprecated for security reasons: ' + utils.trunc(xmlString, 400) + ' (' + file.originalname + ')'))
         }
-      }
+      })
     } else {
       res.status(410)
       next(new Error('B2B customer complaints via file upload have been deprecated for security reasons (' + file.originalname + ')'))
