@@ -12,13 +12,16 @@ const logger = require('../lib/logger')
 module.exports = function profileImageUrlUpload () {
   return (req, res, next) => {
     if (req.body.imageUrl !== undefined) {
+      if (typeof req.body.imageUrl !== 'string') {
+        return res.status(400).send('Invalid image URL')
+      }
       let url = req.body.imageUrl
       // Basic SSRF protection: only allow http/https URLs
       if (!/^https?:\/\//i.test(url)) {
         return res.status(400).send('Invalid image URL')
       }
       // Prevent path traversal in file extension
-      url = url.split('?')[0]
+      url = String(url).split('?')[0]
       const extMatch = url.match(/\.([a-zA-Z0-9]+)$/)
       const ext = extMatch && ['jpg', 'jpeg', 'png', 'svg', 'gif'].includes(extMatch[1].toLowerCase()) ? extMatch[1].toLowerCase() : 'jpg'
       if (url.match(/(.)*solve\/challenges\/server-side(.)*/) !== null) req.app.locals.abused_ssrf_bug = true

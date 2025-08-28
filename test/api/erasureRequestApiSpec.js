@@ -1,3 +1,4 @@
+const pw = require('../helpers/passwords')
 /*
  * Copyright (c) 2014-2021 Bjoern Kimminich.
  * SPDX-License-Identifier: MIT
@@ -14,7 +15,7 @@ describe('/rest/user/erasure-request', () => {
       headers: jsonHeader,
       body: {
         email: 'bjoern.kimminich@gmail.com',
-        password: 'bW9jLmxpYW1nQGhjaW5pbW1pay5ucmVvamI='
+        password: pw.base64Email()
       }
     })
       .expect('status', 200)
@@ -28,7 +29,7 @@ describe('/rest/user/erasure-request', () => {
               headers: jsonHeader,
               body: {
                 email: 'bjoern.kimminich@gmail.com',
-                password: 'bW9jLmxpYW1nQGhjaW5pbW1pay5ucmVvamI='
+                password: pw.base64Email()
               }
             })
               .expect('status', 200)

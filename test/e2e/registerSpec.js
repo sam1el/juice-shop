@@ -14,7 +14,7 @@ describe('/#/register', () => {
 
   if (!utils.disableOnContainerEnv()) {
     describe('challenge "persistedXssUser"', () => {
-      protractor.beforeEach.login({ email: 'admin@' + config.get('application.domain'), password: 'admin123' })
+      protractor.beforeEach.login({ email: 'admin@' + config.get('application.domain'), password: require('../helpers/passwords').admin() })
 
       it('should be possible to bypass validation by directly using Rest API', async () => {
         browser.executeScript(baseUrl => {
@@ -29,7 +29,7 @@ describe('/#/register', () => {
           xhttp.setRequestHeader('Content-type', 'application/json')
           xhttp.send(JSON.stringify({
             email: '<iframe src="javascript:alert(`xss`)">',
-            password: 'XSSed',
+            password: require('../helpers/passwords').generatePassword ? require('../helpers/passwords').generatePassword() : 'XSSed',
             passwordRepeat: 'XSSed',
             role: 'admin'
           }))
@@ -74,7 +74,7 @@ describe('/#/register', () => {
 
         xhttp.open('POST', baseUrl + '/api/Users/', true)
         xhttp.setRequestHeader('Content-type', 'application/json')
-        xhttp.send(JSON.stringify({ email: 'testing@test.com', password: 'pwned', passwordRepeat: 'pwned', role: 'admin' }))
+        xhttp.send(JSON.stringify({ email: 'testing@test.com', password: require('../helpers/passwords').generatePassword ? require('../helpers/passwords').generatePassword() : 'pwned', passwordRepeat: require('../helpers/passwords').generatePassword ? require('../helpers/passwords').generatePassword() : 'pwned', role: 'admin' }))
       }, browser.baseUrl)
     })
 
@@ -93,7 +93,7 @@ describe('/#/register', () => {
 
         xhttp.open('POST', baseUrl + '/api/Users/', true)
         xhttp.setRequestHeader('Content-type', 'application/json')
-        xhttp.send(JSON.stringify({ email: 'uncle@bob.com', password: 'ThereCanBeOnlyOne' }))
+        xhttp.send(JSON.stringify({ email: 'uncle@bob.com', password: require('../helpers/passwords').generatePassword ? require('../helpers/passwords').generatePassword() : 'ThereCanBeOnlyOne' }))
       }, browser.baseUrl)
     })
 

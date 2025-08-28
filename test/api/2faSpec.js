@@ -1,3 +1,4 @@
+const pw = require('../helpers/passwords')
 /*
  * Copyright (c) 2014-2021 Bjoern Kimminich.
  * SPDX-License-Identifier: MIT
@@ -11,8 +12,9 @@ const config = require('config')
 const otplib = require('otplib')
 const jwt = require('jsonwebtoken')
 
-const REST_URL = 'http://localhost:3000/rest'
-const API_URL = 'http://localhost:3000/api'
+const REST_URL = process.env.REST_URL || 'http://localhost:3000/rest'
+const API_URL = process.env.API_URL || 'http://localhost:3000/api'
+const { generateEmail, generatePassword, generateTotpSecret } = require('../helpers/creds')
 
 const jsonHeader = { 'content-type': 'application/json' }
 
@@ -97,7 +99,7 @@ describe('/rest/2fa/verify', () => {
       type: 'password_valid_needs_second_factor_token'
     })
 
-    const totpToken = otplib.authenticator.generate('IFTXE3SPOEYVURT2MRYGI52TKJ4HC3KH')
+    const totpToken = otplib.authenticator.generate(require('../helpers/secrets').totpValid())
 
     await frisby.post(REST_URL + '/2fa/verify', {
       headers: jsonHeader,
@@ -124,7 +126,7 @@ describe('/rest/2fa/verify', () => {
       type: 'password_valid_needs_second_factor_token'
     })
 
-    const totpToken = otplib.authenticator.generate('THIS9ISNT8THE8RIGHT8SECRET')
+    const totpToken = otplib.authenticator.generate(require('../helpers/secrets').totpInvalid())
 
     await frisby.post(REST_URL + '/2fa/verify', {
       headers: jsonHeader,
@@ -140,9 +142,9 @@ describe('/rest/2fa/verify', () => {
     const tmpTokenWurstbrot = jwt.sign({
       userId: 10,
       type: 'password_valid_needs_second_factor_token'
-    }, 'this_surly_isnt_the_right_key')
+    }, require('../helpers/secrets').jwtWrongKey())
 
-    const totpToken = otplib.authenticator.generate('IFTXE3SPOEYVURT2MRYGI52TKJ4HC3KH')
+    const totpToken = otplib.authenticator.generate(require('../helpers/secrets').totpValid())
 
     await frisby.post(REST_URL + '/2fa/verify', {
       headers: jsonHeader,
@@ -159,7 +161,7 @@ describe('/rest/2fa/status', () => {
   it('GET should indicate 2fa is setup for 2fa enabled users', async () => {
     const { token } = await login({
       email: `wurstbrot@${config.get('application.domain')}`,
-      password: 'EinBelegtesBrotMitSchinkenSCHINKEN!',
+      password: require('../helpers/passwords').wurstbrot(),
       totpSecret: 'IFTXE3SPOEYVURT2MRYGI52TKJ4HC3KH'
     })
 
@@ -184,7 +186,7 @@ describe('/rest/2fa/status', () => {
   it('GET should indicate 2fa is not setup for users with 2fa disabled', async () => {
     const { token } = await login({
       email: `J12934@${config.get('application.domain')}`,
-      password: '0Y8rMnww$*9VFYE§59-!Fg1L6t&6lB'
+      password: require('../helpers/passwords').j12934()
     })
 
     await frisby.get(
@@ -217,10 +219,10 @@ describe('/rest/2fa/status', () => {
 
 describe('/rest/2fa/setup', () => {
   it('POST should be able to setup 2fa for accounts without 2fa enabled', async () => {
-    const email = 'fooooo1@bar.com'
-    const password = '123456'
+    const email = generateEmail('twofa1_')
+    const password = generatePassword()
 
-    const secret = 'ASDVAJSDUASZGDIADBJS'
+    const secret = generateTotpSecret()
 
     await register({ email, password })
     const { token } = await login({ email, password })
@@ -261,10 +263,10 @@ describe('/rest/2fa/setup', () => {
   })
 
   it('POST should fail if the password doesnt match', async () => {
-    const email = 'fooooo2@bar.com'
-    const password = '123456'
+    const email = generateEmail('twofa2_')
+    const password = generatePassword()
 
-    const secret = 'ASDVAJSDUASZGDIADBJS'
+    const secret = generateTotpSecret()
 
     await register({ email, password })
     const { token } = await login({ email, password })
@@ -289,10 +291,10 @@ describe('/rest/2fa/setup', () => {
   })
 
   it('POST should fail if the inital token is incorrect', async () => {
-    const email = 'fooooo3@bar.com'
-    const password = '123456'
+    const email = generateEmail('twofa3_')
+    const password = generatePassword()
 
-    const secret = 'ASDVAJSDUASZGDIADBJS'
+    const secret = generateTotpSecret()
 
     await register({ email, password })
     const { token } = await login({ email, password })
@@ -317,10 +319,10 @@ describe('/rest/2fa/setup', () => {
   })
 
   it('POST should fail if the token is of the wrong type', async () => {
-    const email = 'fooooo4@bar.com'
-    const password = '123456'
+    const email = generateEmail('twofa4_')
+    const password = generatePassword()
 
-    const secret = 'ASDVAJSDUASZGDIADBJS'
+    const secret = generateTotpSecret()
 
     await register({ email, password })
     const { token } = await login({ email, password })
@@ -373,9 +375,9 @@ describe('/rest/2fa/setup', () => {
 
 describe('/rest/2fa/disable', () => {
   it('POST should be able to disable 2fa for account with 2fa enabled', async () => {
-    const email = 'fooooodisable1@bar.com'
-    const password = '123456'
-    const totpSecret = 'ASDVAJSDUASZGDIADBJS'
+    const email = generateEmail('twofadisable1_')
+    const password = generatePassword()
+    const totpSecret = generateTotpSecret()
 
     await register({ email, password, totpSecret })
     const { token } = await login({ email, password, totpSecret })
@@ -407,9 +409,9 @@ describe('/rest/2fa/disable', () => {
   })
 
   it('POST should not be possible to disable 2fa without the correct password', async () => {
-    const email = 'fooooodisable1@bar.com'
-    const password = '123456'
-    const totpSecret = 'ASDVAJSDUASZGDIADBJS'
+    const email = generateEmail('twofadisable2_')
+    const password = generatePassword()
+    const totpSecret = generateTotpSecret()
 
     await register({ email, password, totpSecret })
     const { token } = await login({ email, password, totpSecret })

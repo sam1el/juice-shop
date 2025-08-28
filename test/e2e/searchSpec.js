@@ -64,7 +64,7 @@ describe('/rest/products/search', () => {
   })
 
   describe('challenge "dlpPastebinLeakChallenge"', () => {
-    protractor.beforeEach.login({ email: 'admin@' + config.get('application.domain'), password: 'admin123' })
+    protractor.beforeEach.login({ email: 'admin@' + config.get('application.domain'), password: require('../helpers/passwords').admin() })
 
     it('search query should logically reveal the special product', () => {
       browser.driver.get(browser.baseUrl + '/rest/products/search?q=\'))--').then(() => {
@@ -74,7 +74,7 @@ describe('/rest/products/search', () => {
   })
 
   xdescribe('challenge "christmasSpecial"', () => {
-    protractor.beforeEach.login({ email: 'admin@' + config.get('application.domain'), password: 'admin123' })
+    protractor.beforeEach.login({ email: 'admin@' + config.get('application.domain'), password: require('../helpers/passwords').admin() })
 
     it('search query should reveal logically deleted christmas special product on SQL injection attack', () => {
       browser.driver.get(browser.baseUrl + '/rest/products/search?q=\'))--').then(() => {

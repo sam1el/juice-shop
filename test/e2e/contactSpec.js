@@ -21,7 +21,7 @@ describe('/#/contact', () => {
   })
 
   describe('challenge "forgedFeedback"', () => {
-    protractor.beforeEach.login({ email: 'admin@' + config.get('application.domain'), password: 'admin123' })
+    protractor.beforeEach.login({ email: 'admin@' + config.get('application.domain'), password: require('../helpers/passwords').admin() })
 
     it('should be possible to provide feedback as another user', () => {
       const EC = protractor.ExpectedConditions
@@ -46,7 +46,7 @@ describe('/#/contact', () => {
 
   if (!utils.disableOnContainerEnv()) {
     describe('challenge "persistedXssFeedback"', () => {
-      protractor.beforeEach.login({ email: 'admin@' + config.get('application.domain'), password: 'admin123' })
+      protractor.beforeEach.login({ email: 'admin@' + config.get('application.domain'), password: require('../helpers/passwords').admin() })
 
       it('should be possible to trick the sanitization with a masked XSS attack', () => {
         const EC = protractor.ExpectedConditions

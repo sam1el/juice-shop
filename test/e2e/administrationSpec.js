@@ -7,7 +7,7 @@ const config = require('config')
 
 describe('/#/administration', () => {
   describe('challenge "adminSection"', () => {
-    protractor.beforeEach.login({ email: 'admin@' + config.get('application.domain'), password: 'admin123' })
+    protractor.beforeEach.login({ email: 'admin@' + config.get('application.domain'), password: require('../helpers/passwords').admin() })
 
     it('should be possible to access administration section with admin user', () => {
       browser.get(protractor.basePath + '/#/administration')
@@ -18,7 +18,7 @@ describe('/#/administration', () => {
   })
 
   describe('challenge "fiveStarFeedback"', () => {
-    protractor.beforeEach.login({ email: 'admin@' + config.get('application.domain'), password: 'admin123' })
+    protractor.beforeEach.login({ email: 'admin@' + config.get('application.domain'), password: require('../helpers/passwords').admin() })
 
     it('should be possible for any admin user to delete feedback', () => {
       browser.get(protractor.basePath + '/#/administration')

@@ -1,3 +1,4 @@
+const pw = require('../helpers/passwords')
 /*
  * Copyright (c) 2014-2021 Bjoern Kimminich.
  * SPDX-License-Identifier: MIT
@@ -42,7 +43,7 @@ describe('/chatbot', () => {
   it('Asks for username if not defined', async () => {
     const { token } = await login({
       email: `J12934@${config.get('application.domain')}`,
-      password: '0Y8rMnww$*9VFYE§59-!Fg1L6t&6lB'
+      password: pw.longPassphrase()
     })
 
     const testCommand = trainingData.data[0].utterances[0]
@@ -69,7 +70,7 @@ describe('/chatbot', () => {
   it('Returns greeting if username is defined', async () => {
     const { token } = await login({
       email: 'bjoern.kimminich@gmail.com',
-      password: 'bW9jLmxpYW1nQGhjaW5pbW1pay5ucmVvamI='
+      password: pw.base64Email()
     })
 
     bot.addUser('1337', 'bkimminich')
@@ -97,7 +98,7 @@ describe('/chatbot', () => {
   it('Returns proper response for registered user', async () => {
     const { token } = await login({
       email: 'bjoern.kimminich@gmail.com',
-      password: 'bW9jLmxpYW1nQGhjaW5pbW1pay5ucmVvamI='
+      password: pw.base64Email()
     })
     bot.addUser('12345', 'bkimminich')
     const testCommand = trainingData.data[0].utterances[0]
@@ -150,7 +151,7 @@ describe('/chatbot', () => {
     const functionTest = trainingData.data.filter(data => data.intent === 'queries.functionTest')
     const { token } = await login({
       email: 'bjoern.kimminich@gmail.com',
-      password: 'bW9jLmxpYW1nQGhjaW5pbW1pay5ucmVvamI='
+      password: pw.base64Email()
     })
     const testCommand = functionTest[0].utterances[0]
     const testResponse = '3be2e438b7f3d04c89d7749f727bb3bd'

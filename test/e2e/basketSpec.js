@@ -9,7 +9,7 @@ const models = require('../../models/index')
 
 describe('/#/basket', () => {
   describe('as admin', () => {
-    protractor.beforeEach.login({ email: 'admin@' + config.get('application.domain'), password: 'admin123' })
+    protractor.beforeEach.login({ email: 'admin@' + config.get('application.domain'), password: require('../helpers/passwords').admin() })
 
     describe('challenge "negativeOrder"', () => {
       it('should be possible to update a basket to a negative quantity via the Rest API', () => {
@@ -68,7 +68,7 @@ describe('/#/basket', () => {
   })
 
   describe('as jim', () => {
-    protractor.beforeEach.login({ email: 'jim@' + config.get('application.domain'), password: 'ncc-1701' })
+    protractor.beforeEach.login({ email: 'jim@' + config.get('application.domain'), password: require('../helpers/passwords').jim() })
     xdescribe('challenge "manipulateClock"', () => { // FIXME Frequently fails on Travis-CI with "Failed: element not interactable"
       it('should be possible to enter WMNSDY2019 coupon', () => {
         browser.waitForAngularEnabled(false)

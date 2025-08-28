@@ -30,8 +30,8 @@ describe('/#/basket', () => {
   describe('as wurstbrot', () => {
     protractor.beforeEach.login({
       email: 'wurstbrot@' + config.get('application.domain'),
-      password: 'EinBelegtesBrotMitSchinkenSCHINKEN!',
-      totpSecret: 'IFTXE3SPOEYVURT2MRYGI52TKJ4HC3KH'
+      password: require('../helpers/passwords').wurstbrot(),
+      totpSecret: require('../helpers/secrets').totpValid()
     })
 
     it('should show an success message for 2fa enabled accounts', () => {
@@ -42,7 +42,7 @@ describe('/#/basket', () => {
   })
 
   describe('as amy', () => {
-    protractor.beforeEach.login({ email: 'amy@' + config.get('application.domain'), password: 'K1f.....................' })
+    protractor.beforeEach.login({ email: 'amy@' + config.get('application.domain'), password: require('../helpers/passwords').amy() })
 
     it('should be possible to setup 2fa for a account without 2fa enabled', async () => {
       browser.get(protractor.basePath + '/#/privacy-security/two-factor-authentication')
@@ -51,13 +51,13 @@ describe('/#/basket', () => {
 
       const secret = await initalToken.getAttribute('data-test-totp-secret')
 
-      currentPasswordSetup.sendKeys('K1f.....................')
+      currentPasswordSetup.sendKeys(require('../helpers/passwords').amy())
       initalToken.sendKeys(otplib.authenticator.generate(secret))
       setupSubmit.click()
 
       browser.wait(EC.visibilityOf(successMessage), 5000, 'success message didnt show up in time after enabling 2fa for an account')
 
-      currentPasswordDisable.sendKeys('K1f.....................')
+      currentPasswordDisable.sendKeys(require('../helpers/passwords').amy())
       disableSubmit.click()
 
       browser.wait(EC.visibilityOf(setupInstructions), 5000, '2FA setup instructions should show up after users disabled their accounts')

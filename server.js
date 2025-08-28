@@ -85,6 +85,7 @@ const languageList = require('./routes/languages')
 const config = require('config')
 const imageCaptcha = require('./routes/imageCaptcha')
 const dataExport = require('./routes/dataExport')
+const csrf = require('csurf')
 const address = require('./routes/address')
 const erasureRequest = require('./routes/erasureRequest')
 const payment = require('./routes/payment')
@@ -261,6 +262,7 @@ i18n.configure({
 app.use(i18n.init)
 
 app.use(bodyParser.urlencoded({ extended: true }))
+
 /* File Upload */
 app.post('/file-upload', uploadToMemory.single('file'), ensureFileIsPassed, metrics.observeFileUploadMetricsMiddleware(), handleZipFileUpload, checkUploadSize, checkFileType, handleXmlUpload)
 app.post('/profile/image/file', uploadToMemory.single('file'), ensureFileIsPassed, metrics.observeFileUploadMetricsMiddleware(), profileImageFileUpload())
@@ -391,12 +393,14 @@ app.get('/rest/2fa/status', insecurity.isAuthorized(), twoFactorAuth.status())
 /* Enable 2FA for the current User */
 app.post('/rest/2fa/setup',
   new RateLimit({ windowMs: 5 * 60 * 1000, max: 100 }),
+  csrf({ cookie: true }),
   insecurity.isAuthorized(),
   twoFactorAuth.setup()
 )
 /* Disable 2FA Status for the current User */
 app.post('/rest/2fa/disable',
   new RateLimit({ windowMs: 5 * 60 * 1000, max: 100 }),
+  csrf({ cookie: true }),
   insecurity.isAuthorized(),
   twoFactorAuth.disable()
 )

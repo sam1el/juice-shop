@@ -60,7 +60,8 @@ module.exports = function getUserProfile () {
         }
 
         const theme = themes[config.get('application.theme')]
-        const CSP = `img-src 'self' ${safeUser.profileImage}; script-src 'self' 'unsafe-eval' https://code.getmdl.io http://ajax.googleapis.com`
+        // Avoid injecting user-controlled values into CSP; allow images from self and https
+        const CSP = "img-src 'self' https: data:; script-src 'self' 'unsafe-eval' https://code.getmdl.io http://ajax.googleapis.com"
         utils.solveIf(challenges.usernameXssChallenge, () => { return safeUser.profileImage.match(/;[ ]*script-src(.)*'unsafe-inline'/g) !== null && utils.contains(safeUser.username, '<script>alert(`xss`)</script>') })
 
         res.set({
@@ -68,7 +69,7 @@ module.exports = function getUserProfile () {
         })
 
         // Render the static template and send as HTML, passing only safe variables and theme/config
-        res.send(pug.renderFile('views/userProfile.pug', {
+        res.contentType('text/plain').send(pug.renderFile('views/userProfile.pug', {
           username: safeUser.username,
           email: safeUser.email,
           profileImage: safeUser.profileImage,

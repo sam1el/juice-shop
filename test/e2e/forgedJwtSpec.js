@@ -1,3 +1,4 @@
+const secrets = require('../helpers/secrets')
 /*
  * Copyright (c) 2014-2021 Bjoern Kimminich.
  * SPDX-License-Identifier: MIT
@@ -17,7 +18,7 @@ describe('/', () => {
   if (!utils.disableOnWindowsEnv()) {
     describe('challenge "jwtForged"', () => {
       it('should accept a token HMAC-signed with public RSA key with email rsa_lord@juice-sh.op in the payload ', () => {
-        browser.executeScript('localStorage.setItem("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRhIjp7ImVtYWlsIjoicnNhX2xvcmRAanVpY2Utc2gub3AifSwiaWF0IjoxNTgzMDM3NzExfQ.gShXDT5TrE5736mpIbfVDEcQbLfteJaQUG7Z0PH8Xc8")')
+        browser.executeScript('localStorage.setItem("token", "' + secrets.jwtHs256ForgedEmailFull() + '")')
         browser.get(protractor.basePath + '/#/')
       })
 

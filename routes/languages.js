@@ -4,6 +4,7 @@
  */
 
 const fs = require('fs')
+const path = require('path')
 const locales = require('../data/static/locales')
 const rateLimit = require('express-rate-limit')
 
@@ -17,18 +18,28 @@ module.exports = function getLanguageList () {
     let count = 0
     let enContent
 
-    fs.readFile('frontend/dist/frontend/assets/i18n/en.json', 'utf-8', (err, content) => {
+    const baseDir = path.resolve('frontend/dist/frontend/assets/i18n')
+    const readFromBase = (file) => path.join(baseDir, file)
+    fs.readFile(readFromBase('en.json'), 'utf-8', (err, content) => {
       if (err) {
         next(new Error(`Unable to retrieve en.json language file: ${err.message}`))
         return
       }
       enContent = JSON.parse(content)
-      fs.readdir('frontend/dist/frontend/assets/i18n/', (err, languageFiles) => {
+      fs.readdir(baseDir, (err, languageFiles) => {
         if (err) {
           next(new Error(`Unable to read i18n directory: ${err.message}`))
         }
         languageFiles.forEach((fileName) => {
-          fs.readFile('frontend/dist/frontend/assets/i18n/' + fileName, 'utf-8', async (err, content) => {
+          // sanitize and bound file names: only *.json and no path segments
+          if (typeof fileName !== 'string' || fileName.length > 100 || fileName.includes('..') || fileName.includes('/') || !/^[a-zA-Z0-9_\-]+\.json$/.test(fileName)) {
+            return
+          }
+          const targetPath = readFromBase(fileName)
+          if (!targetPath.startsWith(baseDir)) {
+            return
+          }
+          fs.readFile(targetPath, 'utf-8', async (err, content) => {
             if (err) {
               next(new Error(`Unable to retrieve ${fileName} language file: ${err.message}`))
             }

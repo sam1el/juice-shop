@@ -9,7 +9,7 @@ const utils = require('../../lib/utils')
 describe('/profile', () => {
   let username, submitButton, url, setProfileImageButton
 
-  protractor.beforeEach.login({ email: 'admin@' + config.get('application.domain'), password: 'admin123' })
+  protractor.beforeEach.login({ email: 'admin@' + config.get('application.domain'), password: require('../helpers/passwords').admin() })
 
   describe('challenge "ssrf"', () => {
     it('should be possible to request internal resources using image upload URL', () => {

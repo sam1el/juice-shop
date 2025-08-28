@@ -18,7 +18,7 @@ describe('/#/privacy-security/data-export', () => {
       element(by.id('registerButton')).click()
     })
 
-    protractor.beforeEach.login({ email: 'admun@' + config.get('application.domain'), password: 'admun123' })
+    protractor.beforeEach.login({ email: 'admun@' + config.get('application.domain'), password: require('../helpers/passwords').admun() })
 
     it('should be possible to steal admin user data by causing email clash during export', () => {
       browser.get(protractor.basePath + '/#/privacy-security/data-export')

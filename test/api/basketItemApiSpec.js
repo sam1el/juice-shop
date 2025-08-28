@@ -1,3 +1,4 @@
+const pw = require('../helpers/passwords')
 /*
  * Copyright (c) 2014-2021 Bjoern Kimminich.
  * SPDX-License-Identifier: MIT
@@ -17,7 +18,7 @@ beforeAll(() => {
     headers: jsonHeader,
     body: {
       email: 'jim@' + config.get('application.domain'),
-      password: 'ncc-1701'
+      password: pw.jim()
     }
   })
     .expect('status', 200)

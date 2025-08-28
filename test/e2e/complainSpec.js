@@ -10,7 +10,7 @@ const utils = require('../../lib/utils')
 describe('/#/complain', () => {
   let file, complaintMessage, submitButton
 
-  protractor.beforeEach.login({ email: 'admin@' + config.get('application.domain'), password: 'admin123' })
+  protractor.beforeEach.login({ email: 'admin@' + config.get('application.domain'), password: require('../helpers/passwords').admin() })
 
   beforeEach(() => {
     browser.get(protractor.basePath + '/#/complain')
