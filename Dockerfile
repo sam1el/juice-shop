@@ -1,4 +1,4 @@
-FROM node:24.6.0-trixie-slim
+FROM node:24.6.0-alpine3.22
 
 RUN apt-get -y update && apt-get -y install ca-certificates apt-transport-https
 
