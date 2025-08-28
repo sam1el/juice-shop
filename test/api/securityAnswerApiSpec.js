@@ -1,3 +1,4 @@
+const pw = require('../helpers/passwords')
 /*
  * Copyright (c) 2014-2021 Bjoern Kimminich.
  * SPDX-License-Identifier: MIT
@@ -41,7 +42,7 @@ describe('/api/SecurityAnswers/:id', () => {
   it('POST security answer for a newly registered user', () => {
     return frisby.post(API_URL + '/Users', {
       email: 'new.user@te.st',
-      password: '12345'
+      password: pw.generatePassword ? pw.generatePassword() : '12345'
     }, { json: true })
       .expect('status', 201)
       .then(({ json }) => {

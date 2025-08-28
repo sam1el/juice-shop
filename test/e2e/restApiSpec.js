@@ -10,7 +10,7 @@ const utils = require('../../lib/utils')
 describe('/api', () => {
   if (!utils.disableOnContainerEnv()) {
     describe('challenge "restfulXss"', () => {
-      protractor.beforeEach.login({ email: 'admin@' + config.get('application.domain'), password: 'admin123' })
+      protractor.beforeEach.login({ email: 'admin@' + config.get('application.domain'), password: require('../helpers/passwords').admin() })
 
       it('should be possible to create a new product when logged in', () => {
         const EC = protractor.ExpectedConditions
@@ -97,7 +97,7 @@ describe('/api', () => {
 describe('/rest/saveLoginIp', () => {
   if (!utils.disableOnContainerEnv()) {
     describe('challenge "httpHeaderXss"', () => {
-      protractor.beforeEach.login({ email: 'admin@' + config.get('application.domain'), password: 'admin123' })
+      protractor.beforeEach.login({ email: 'admin@' + config.get('application.domain'), password: require('../helpers/passwords').admin() })
 
       it('should be possible to save log-in IP when logged in', () => {
         browser.waitForAngularEnabled(false)

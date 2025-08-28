@@ -1,3 +1,4 @@
+const pw = require('../helpers/passwords')
 /*
  * Copyright (c) 2014-2021 Bjoern Kimminich.
  * SPDX-License-Identifier: MIT
@@ -8,7 +9,7 @@ const fetch = require('node-fetch')
 
 describe('/#/deluxe-membership', () => {
   describe('challenge "svgInjection"', () => {
-    protractor.beforeEach.login({ email: 'jim@' + config.get('application.domain'), password: 'ncc-1701' })
+    protractor.beforeEach.login({ email: 'jim@' + config.get('application.domain'), password: require('../helpers/passwords').jim() })
 
     it('should be possible to pass in a forgotten test parameter abusing the redirect-endpoint to load an external image', () => {
       browser.get(protractor.basePath + '/#/deluxe-membership?testDecal=' + encodeURIComponent('../../../..' + protractor.basePath + '/redirect?to=https://placekitten.com/g/200/100?x=https://github.com/bkimminich/juice-shop'))
@@ -18,7 +19,7 @@ describe('/#/deluxe-membership', () => {
   })
 
   describe('challenge "freeDeluxe"', () => {
-    protractor.beforeEach.login({ email: 'jim@' + config.get('application.domain'), password: 'ncc-1701' })
+    protractor.beforeEach.login({ email: 'jim@' + config.get('application.domain'), password: require('../helpers/passwords').jim() })
 
     it('should upgrade to deluxe for free by making a post request to /rest/deluxe-membership by setting the paymentMode parameter to null', () => {
       browser.get(protractor.basePath + '/#/')

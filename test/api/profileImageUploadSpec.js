@@ -1,3 +1,4 @@
+const pw = require('../helpers/passwords')
 /*
  * Copyright (c) 2014-2021 Bjoern Kimminich.
  * SPDX-License-Identifier: MIT
@@ -22,7 +23,7 @@ describe('/profile/image/file', () => {
       headers: jsonHeader,
       body: {
         email: 'jim@' + config.get('application.domain'),
-        password: 'ncc-1701'
+        password: pw.jim()
       }
     })
       .expect('status', 200)
@@ -48,7 +49,7 @@ describe('/profile/image/file', () => {
       headers: jsonHeader,
       body: {
         email: 'jim@' + config.get('application.domain'),
-        password: 'ncc-1701'
+        password: pw.jim()
       }
     })
       .expect('status', 200)
@@ -91,7 +92,7 @@ describe('/profile/image/url', () => {
       headers: jsonHeader,
       body: {
         email: 'jim@' + config.get('application.domain'),
-        password: 'ncc-1701'
+        password: pw.jim()
       }
     })
       .expect('status', 200)
@@ -116,7 +117,7 @@ describe('/profile/image/url', () => {
       headers: jsonHeader,
       body: {
         email: 'jim@' + config.get('application.domain'),
-        password: 'ncc-1701'
+        password: pw.jim()
       }
     })
       .expect('status', 200)

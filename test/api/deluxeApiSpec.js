@@ -1,3 +1,4 @@
+const pw = require('../helpers/passwords')
 /*
  * Copyright (c) 2014-2021 Bjoern Kimminich.
  * SPDX-License-Identifier: MIT
@@ -31,7 +32,7 @@ describe('/rest/deluxe-membership', () => {
       headers: jsonHeader,
       body: {
         email: 'bender@' + config.get('application.domain'),
-        password: 'OhG0dPlease1nsertLiquor!'
+        password: pw.bender()
       }
     })
       .expect('status', 200)
@@ -49,7 +50,7 @@ describe('/rest/deluxe-membership', () => {
       headers: jsonHeader,
       body: {
         email: 'ciso@' + config.get('application.domain'),
-        password: 'mDLx?94T~1CfVfZMzw@sJ9f?s3L6lbMqE70FfI8^54jbNikY5fymx7c!YbJb'
+        password: pw.longPassphrase()
       }
     })
       .expect('status', 200)
@@ -67,7 +68,7 @@ describe('/rest/deluxe-membership', () => {
       headers: jsonHeader,
       body: {
         email: 'admin@' + config.get('application.domain'),
-        password: 'admin123'
+        password: pw.admin()
       }
     })
       .expect('status', 200)
@@ -85,7 +86,7 @@ describe('/rest/deluxe-membership', () => {
       headers: jsonHeader,
       body: {
         email: 'accountant@' + config.get('application.domain'),
-        password: 'i am an awesome accountant'
+        password: pw.accountant()
       }
     })
       .expect('status', 200)
@@ -101,7 +102,7 @@ describe('/rest/deluxe-membership', () => {
   it('POST upgrade deluxe membership status for customers', async () => {
     const { token } = await login({
       email: 'bender@' + config.get('application.domain'),
-      password: 'OhG0dPlease1nsertLiquor!'
+      password: pw.bender()
     })
 
     frisby.get(API_URL + '/Cards', {
@@ -124,7 +125,7 @@ describe('/rest/deluxe-membership', () => {
   it('POST deluxe membership status with wrong card id throws error', async () => {
     const { token } = await login({
       email: 'jim@' + config.get('application.domain'),
-      password: 'ncc-1701'
+      password: pw.jim()
     })
 
     frisby.post(REST_URL + '/deluxe-membership', {
@@ -143,7 +144,7 @@ describe('/rest/deluxe-membership', () => {
       headers: jsonHeader,
       body: {
         email: 'ciso@' + config.get('application.domain'),
-        password: 'mDLx?94T~1CfVfZMzw@sJ9f?s3L6lbMqE70FfI8^54jbNikY5fymx7c!YbJb'
+        password: pw.longPassphrase()
       }
     })
       .expect('status', 200)
@@ -164,7 +165,7 @@ describe('/rest/deluxe-membership', () => {
       headers: jsonHeader,
       body: {
         email: 'admin@' + config.get('application.domain'),
-        password: 'admin123'
+        password: pw.admin()
       }
     })
       .expect('status', 200)
@@ -185,7 +186,7 @@ describe('/rest/deluxe-membership', () => {
       headers: jsonHeader,
       body: {
         email: 'accountant@' + config.get('application.domain'),
-        password: 'i am an awesome accountant'
+        password: pw.accountant()
       }
     })
       .expect('status', 200)

@@ -1,3 +1,4 @@
+const pw = require('../helpers/passwords')
 /*
  * Copyright (c) 2014-2021 Bjoern Kimminich.
  * SPDX-License-Identifier: MIT
@@ -24,7 +25,7 @@ describe('/rest/user/login', () => {
       headers: jsonHeader,
       body: {
         email: 'kalli@kasper.le',
-        password: 'kallliiii'
+        password: pw.kallliiii()
       }
     })
       .expect('status', 201)
@@ -33,7 +34,7 @@ describe('/rest/user/login', () => {
           headers: jsonHeader,
           body: {
             email: 'kalli@kasper.le',
-            password: 'kallliiii'
+            password: pw.kallliiii()
           }
         })
           .expect('status', 200)
@@ -49,7 +50,7 @@ describe('/rest/user/login', () => {
   it('POST login non-existing user', () => {
     return frisby.post(REST_URL + '/user/login', {
       email: 'otto@mei.er',
-      password: 'ooootto'
+      password: pw.ooootto()
     }, { json: true })
       .expect('status', 401)
   })
@@ -67,7 +68,7 @@ describe('/rest/user/login', () => {
       headers: jsonHeader,
       body: {
         email: 'admin@' + config.get('application.domain'),
-        password: 'admin123'
+        password: pw.admin()
       }
     })
       .expect('status', 200)
@@ -82,7 +83,7 @@ describe('/rest/user/login', () => {
       headers: jsonHeader,
       body: {
         email: 'support@' + config.get('application.domain'),
-        password: 'J6aVjTgOpRs$?5l+Zkq2AYnCE@RF§P'
+        password: pw.longPassphrase()
       }
     })
       .expect('status', 200)
@@ -97,7 +98,7 @@ describe('/rest/user/login', () => {
       headers: jsonHeader,
       body: {
         email: 'mc.safesearch@' + config.get('application.domain'),
-        password: 'Mr. N00dles'
+        password: pw.mcSafesearch()
       }
     })
       .expect('status', 200)
@@ -112,7 +113,7 @@ describe('/rest/user/login', () => {
       headers: jsonHeader,
       body: {
         email: 'amy@' + config.get('application.domain'),
-        password: 'K1f.....................'
+        password: pw.amy()
       }
     })
       .expect('status', 200)
@@ -127,7 +128,7 @@ describe('/rest/user/login', () => {
       headers: jsonHeader,
       body: {
         email: 'wurstbrot@' + config.get('application.domain'),
-        password: 'EinBelegtesBrotMitSchinkenSCHINKEN!'
+        password: pw.longPassphrase()
       }
     })
       .expect('status', 401)
@@ -145,7 +146,7 @@ describe('/rest/user/login', () => {
       headers: jsonHeader,
       body: {
         email: 'bjoern.kimminich@gmail.com',
-        password: 'bW9jLmxpYW1nQGhjaW5pbW1pay5ucmVvamI='
+        password: pw.base64Email()
       }
     })
       .expect('status', 200)
@@ -246,7 +247,7 @@ describe('/rest/user/login', () => {
       headers: customHeader,
       body: {
         email: 'admin@' + config.get('application.domain'),
-        password: 'admin123',
+        password: pw.admin(),
         oauth: true
       }
     })
@@ -262,7 +263,7 @@ describe('/rest/saveLoginIp', () => {
       headers: jsonHeader,
       body: {
         email: 'bjoern.kimminich@gmail.com',
-        password: 'bW9jLmxpYW1nQGhjaW5pbW1pay5ucmVvamI='
+        password: pw.base64Email()
       }
     })
       .expect('status', 200)
@@ -283,7 +284,7 @@ describe('/rest/saveLoginIp', () => {
       headers: jsonHeader,
       body: {
         email: 'bjoern.kimminich@gmail.com',
-        password: 'bW9jLmxpYW1nQGhjaW5pbW1pay5ucmVvamI='
+        password: pw.base64Email()
       }
     })
       .expect('status', 200)

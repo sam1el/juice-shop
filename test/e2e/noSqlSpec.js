@@ -13,7 +13,7 @@ describe('/rest/products/reviews', () => {
 
   if (!utils.disableOnContainerEnv()) {
     describe('challenge "NoSQL DoS"', () => {
-      protractor.beforeEach.login({ email: 'admin@' + config.get('application.domain'), password: 'admin123' })
+      protractor.beforeEach.login({ email: 'admin@' + config.get('application.domain'), password: require('../helpers/passwords').admin() })
 
       it('should be possible to inject a command into the get route', () => {
         browser.waitForAngularEnabled(false)
@@ -66,7 +66,7 @@ describe('/rest/products/reviews', () => {
   })
 
   describe('challenge "Forged Review"', () => {
-    protractor.beforeEach.login({ email: 'mc.safesearch@' + config.get('application.domain'), password: 'Mr. N00dles' })
+    protractor.beforeEach.login({ email: 'mc.safesearch@' + config.get('application.domain'), password: require('../helpers/passwords').mcSafesearch() })
 
     it('should be possible to edit any existing review', () => {
       browser.waitForAngularEnabled(false)
@@ -103,7 +103,7 @@ describe('/rest/products/reviews', () => {
   })
 
   describe('challenge "Multiple Likes"', () => {
-    protractor.beforeEach.login({ email: 'mc.safesearch@' + config.get('application.domain'), password: 'Mr. N00dles' })
+    protractor.beforeEach.login({ email: 'mc.safesearch@' + config.get('application.domain'), password: require('../helpers/passwords').mcSafesearch() })
 
     it('should be possible to like reviews multiple times', () => {
       browser.waitForAngularEnabled(false)

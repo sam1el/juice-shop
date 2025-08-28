@@ -1,3 +1,4 @@
+const pw = require('../helpers/passwords')
 /*
  * Copyright (c) 2014-2021 Bjoern Kimminich.
  * SPDX-License-Identifier: MIT
@@ -17,7 +18,7 @@ describe('/rest/user/change-password', () => {
       headers: jsonHeader,
       body: {
         email: 'kuni@be.rt',
-        password: 'kunigunde'
+        password: pw.kunigunde()
       }
     })
       .expect('status', 201)
@@ -26,7 +27,7 @@ describe('/rest/user/change-password', () => {
           headers: jsonHeader,
           body: {
             email: 'kuni@be.rt',
-            password: 'kunigunde'
+            password: pw.kunigunde()
           }
         })
           .expect('status', 200)
@@ -44,7 +45,7 @@ describe('/rest/user/change-password', () => {
       headers: jsonHeader,
       body: {
         email: 'bjoern@' + config.get('application.domain'),
-        password: 'monkey summer birthday are all bad passwords but work just fine in a long passphrase'
+        password: pw.longPassphrase()
       }
     })
       .expect('status', 200)
@@ -90,7 +91,7 @@ describe('/rest/user/change-password', () => {
       headers: jsonHeader,
       body: {
         email: 'bender@' + config.get('application.domain'),
-        password: 'OhG0dPlease1nsertLiquor!'
+        password: pw.bender()
       }
     })
       .expect('status', 200)

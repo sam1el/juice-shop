@@ -158,7 +158,7 @@ describe('/#/login', () => {
         xhttp.setRequestHeader('Content-type', 'application/json')
         xhttp.setRequestHeader('Authorization', `Bearer ${localStorage.getItem('token')}`)
         xhttp.setRequestHeader('X-User-Email', localStorage.getItem('email'))
-        xhttp.send(JSON.stringify({ email: 'admin@juice-sh.op', password: 'admin123', oauth: true }))
+        xhttp.send(JSON.stringify({ email: 'admin@juice-sh.op', password: require('../helpers/passwords').admin(), oauth: true }))
       }, browser.baseUrl)
 
       // Deselect to clear email field for subsequent tests

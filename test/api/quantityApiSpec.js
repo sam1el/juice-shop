@@ -1,3 +1,4 @@
+const pw = require('../helpers/passwords')
 /*
  * Copyright (c) 2014-2021 Bjoern Kimminich.
  * SPDX-License-Identifier: MIT
@@ -17,7 +18,7 @@ describe('/api/Quantitys', () => {
       headers: jsonHeader,
       body: {
         email: 'jim@' + config.get('application.domain'),
-        password: 'ncc-1701'
+        password: pw.jim()
       }
     })
       .expect('status', 200)
@@ -34,7 +35,7 @@ describe('/api/Quantitys', () => {
       headers: jsonHeader,
       body: {
         email: 'admin@' + config.get('application.domain'),
-        password: 'admin123'
+        password: pw.admin()
       }
     })
       .expect('status', 200)
@@ -51,7 +52,7 @@ describe('/api/Quantitys', () => {
       headers: jsonHeader,
       body: {
         email: 'accountant@' + config.get('application.domain'),
-        password: 'i am an awesome accountant'
+        password: pw.accountant()
       }
     })
       .expect('status', 200)
@@ -68,7 +69,7 @@ describe('/api/Quantitys', () => {
       headers: jsonHeader,
       body: {
         email: 'jim@' + config.get('application.domain'),
-        password: 'ncc-1701'
+        password: pw.jim()
       }
     })
       .expect('status', 200)
@@ -89,7 +90,7 @@ describe('/api/Quantitys', () => {
       headers: jsonHeader,
       body: {
         email: 'admin@' + config.get('application.domain'),
-        password: 'admin123'
+        password: pw.admin()
       }
     })
       .expect('status', 200)
@@ -110,7 +111,7 @@ describe('/api/Quantitys', () => {
       headers: jsonHeader,
       body: {
         email: 'accountant@' + config.get('application.domain'),
-        password: 'i am an awesome accountant'
+        password: pw.accountant()
       }
     })
       .expect('status', 200)
@@ -133,7 +134,7 @@ describe('/api/Quantitys/:ids', () => {
       headers: jsonHeader,
       body: {
         email: 'jim@' + config.get('application.domain'),
-        password: 'ncc-1701'
+        password: pw.jim()
       }
     })
       .expect('status', 200)
@@ -151,7 +152,7 @@ describe('/api/Quantitys/:ids', () => {
       headers: jsonHeader,
       body: {
         email: 'admin@' + config.get('application.domain'),
-        password: 'admin123'
+        password: pw.admin()
       }
     })
       .expect('status', 200)
@@ -169,7 +170,7 @@ describe('/api/Quantitys/:ids', () => {
       headers: jsonHeader,
       body: {
         email: 'accountant@' + config.get('application.domain'),
-        password: 'i am an awesome accountant'
+        password: pw.accountant()
       }
     })
       .expect('status', 200)
@@ -186,7 +187,7 @@ describe('/api/Quantitys/:ids', () => {
       headers: jsonHeader,
       body: {
         email: 'jim@' + config.get('application.domain'),
-        password: 'ncc-1701'
+        password: pw.jim()
       }
     })
       .expect('status', 200)
@@ -207,7 +208,7 @@ describe('/api/Quantitys/:ids', () => {
       headers: jsonHeader,
       body: {
         email: 'jim@' + config.get('application.domain'),
-        password: 'ncc-1701'
+        password: pw.jim()
       }
     })
       .expect('status', 200)
@@ -228,7 +229,7 @@ describe('/api/Quantitys/:ids', () => {
       headers: jsonHeader,
       body: {
         email: 'accountant@' + config.get('application.domain'),
-        password: 'i am an awesome accountant'
+        password: pw.accountant()
       }
     })
       .expect('status', 200)
@@ -251,7 +252,7 @@ describe('/api/Quantitys/:ids', () => {
       headers: jsonHeader,
       body: {
         email: 'accountant@' + config.get('application.domain'),
-        password: 'i am an awesome accountant'
+        password: pw.accountant()
       }
     })
       .expect('status', 200)
@@ -268,7 +269,7 @@ describe('/api/Quantitys/:ids', () => {
       headers: jsonHeader,
       body: {
         email: 'admin@' + config.get('application.domain'),
-        password: 'admin123'
+        password: pw.admin()
       }
     })
       .expect('status', 200)
@@ -285,7 +286,7 @@ describe('/api/Quantitys/:ids', () => {
       headers: jsonHeader,
       body: {
         email: 'jim@' + config.get('application.domain'),
-        password: 'ncc-1701'
+        password: pw.jim()
       }
     })
       .expect('status', 200)

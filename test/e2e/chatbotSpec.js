@@ -8,7 +8,7 @@ const utils = require('../../lib/utils')
 
 describe('/chatbot', () => {
   let username, submitButton, messageBox
-  protractor.beforeEach.login({ email: 'admin@' + config.get('application.domain'), password: 'admin123' })
+  protractor.beforeEach.login({ email: 'admin@' + config.get('application.domain'), password: require('../helpers/passwords').admin() })
 
   describe('challenge "killChatbot"', () => {
     it('should be possible to kill the chatbot by setting the process to null', () => {

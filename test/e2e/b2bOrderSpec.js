@@ -7,7 +7,7 @@ const config = require('config')
 const utils = require('../../lib/utils')
 
 describe('/b2b/v2/order', () => {
-  protractor.beforeEach.login({ email: 'admin@' + config.get('application.domain'), password: 'admin123' })
+  protractor.beforeEach.login({ email: 'admin@' + config.get('application.domain'), password: require('../helpers/passwords').admin() })
 
   if (!utils.disableOnContainerEnv()) {
     describe('challenge "rce"', () => {

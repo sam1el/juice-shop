@@ -1,3 +1,4 @@
+const pw = require('../helpers/passwords')
 /*
  * Copyright (c) 2014-2021 Bjoern Kimminich.
  * SPDX-License-Identifier: MIT
@@ -38,7 +39,7 @@ describe('/api/Users', () => {
       headers: jsonHeader,
       body: {
         email: 'horst@horstma.nn',
-        password: 'hooooorst'
+        password: pw.hoooorst()
       }
     })
       .expect('status', 201)
@@ -56,7 +57,7 @@ describe('/api/Users', () => {
       headers: jsonHeader,
       body: {
         email: 'horst2@horstma.nn',
-        password: 'hooooorst',
+        password: pw.hoooorst(),
         role: 'admin'
       }
     })
@@ -78,7 +79,7 @@ describe('/api/Users', () => {
       headers: jsonHeader,
       body: {
         email: 'horst3@horstma.nn',
-        password: 'hooooorst',
+        password: pw.hoooorst(),
         role: 'deluxe'
       }
     })
@@ -100,7 +101,7 @@ describe('/api/Users', () => {
       headers: jsonHeader,
       body: {
         email: 'horst4@horstma.nn',
-        password: 'hooooorst',
+        password: pw.hoooorst(),
         role: 'accounting'
       }
     })
@@ -122,7 +123,7 @@ describe('/api/Users', () => {
       headers: jsonHeader,
       body: {
         email: 'horst5@horstma.nn',
-        password: 'hooooorst',
+        password: require('../helpers/passwords').hooooorst ? require('../helpers/passwords').hooooorst() : 'hooooorst',
         role: 'accountinguser'
       }
     })
@@ -141,7 +142,7 @@ describe('/api/Users', () => {
         headers: jsonHeader,
         body: {
           email: '<iframe src="javascript:alert(`xss`)">',
-          password: 'does.not.matter'
+          password: pw.generatePassword ? pw.generatePassword() : 'does.not.matter'
         }
       })
         .expect('status', 201)
@@ -202,7 +203,7 @@ describe('/rest/user/authentication-details', () => {
     return frisby.get(REST_URL + '/user/authentication-details', { headers: authHeader })
       .expect('status', 200)
       .expect('json', 'data.?', {
-        password: '********************************'
+        password: pw.generatePassword ? pw.generatePassword() : '********************************'
       })
   })
 })
@@ -213,7 +214,7 @@ describe('/rest/user/whoami', () => {
       headers: jsonHeader,
       body: {
         email: 'bjoern.kimminich@gmail.com',
-        password: 'bW9jLmxpYW1nQGhjaW5pbW1pay5ucmVvamI='
+        password: require('../helpers/passwords').base64Email()
       }
     })
       .expect('status', 200)
