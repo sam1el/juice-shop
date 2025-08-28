@@ -1,4 +1,4 @@
-FROM node:24.6.0-bullseye-slim
+FROM node:24.6.0-trixie-slim
 
 RUN apt-get -y update && apt-get -y install ca-certificates apt-transport-https
 
