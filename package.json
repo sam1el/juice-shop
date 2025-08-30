@@ -118,7 +118,7 @@
     "js-yaml": "^3.14.0",
     "jsonwebtoken": "^9.0.0",
     "jssha": "^3.1.1",
-    "juicy-chat-bot": "~0.6.0",
+    "juicy-chat-bot": "~0.8.0",
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
     "node-pre-gyp": "^0.17.0",
