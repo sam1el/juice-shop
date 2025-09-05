@@ -44,7 +44,7 @@
     "snarkdown": "^1.2.2",
     "socket.io-client": "^2.3.0",
   "typescript": "~5.9.2",
-  "zone.js": "~0.14.10"
+  "zone.js": "~0.15.1"
   },
   "devDependencies": {
   "@angular/language-service": "^18.2.13",
